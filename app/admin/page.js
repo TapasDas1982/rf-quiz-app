@@ -29,6 +29,8 @@ export default async function AdminPage() {
                 <th>Name</th>
                 <th>Email</th>
                 <th>Phone</th>
+                <th>Correct</th>
+                <th>Wrong</th>
                 <th>Score</th>
                 <th>Time</th>
                 <th>Submitted</th>
@@ -40,6 +42,8 @@ export default async function AdminPage() {
                   <td>{e.name}</td>
                   <td>{e.email}</td>
                   <td>{e.phone}</td>
+                  <td>{e.score}</td>
+                  <td>{e.total - e.score}</td>
                   <td>
                     {e.score}/{e.total}
                   </td>
