@@ -1,0 +1,173 @@
+* {
+  box-sizing: border-box;
+}
+
+html,
+body {
+  padding: 0;
+  margin: 0;
+  background: #f4f6f4;
+  color: #1c2b1e;
+  font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica, Arial, sans-serif;
+}
+
+.page {
+  min-height: 100vh;
+  display: flex;
+  align-items: flex-start;
+  justify-content: center;
+  padding: 32px 16px;
+}
+
+.card {
+  width: 100%;
+  max-width: 640px;
+  background: #fff;
+  border-radius: 16px;
+  box-shadow: 0 8px 24px rgba(0, 0, 0, 0.08);
+  padding: 32px;
+}
+
+h1 {
+  font-size: 1.6rem;
+  margin: 0 0 8px;
+  color: #1f5b3a;
+}
+
+.subtitle {
+  color: #55665a;
+  margin: 0 0 24px;
+  font-size: 0.95rem;
+}
+
+.field {
+  margin-bottom: 16px;
+}
+
+.field label {
+  display: block;
+  font-size: 0.85rem;
+  font-weight: 600;
+  margin-bottom: 6px;
+}
+
+.field input {
+  width: 100%;
+  padding: 10px 12px;
+  border-radius: 8px;
+  border: 1px solid #cfd8d2;
+  font-size: 1rem;
+}
+
+.error {
+  color: #b3261e;
+  font-size: 0.85rem;
+  margin-top: 4px;
+}
+
+.btn {
+  display: inline-block;
+  background: #1f5b3a;
+  color: #fff;
+  border: none;
+  border-radius: 8px;
+  padding: 12px 20px;
+  font-size: 1rem;
+  font-weight: 600;
+  cursor: pointer;
+}
+
+.btn:disabled {
+  opacity: 0.5;
+  cursor: not-allowed;
+}
+
+.btn.secondary {
+  background: transparent;
+  color: #1f5b3a;
+  border: 1px solid #1f5b3a;
+}
+
+.btn-row {
+  display: flex;
+  justify-content: space-between;
+  margin-top: 24px;
+  gap: 12px;
+}
+
+.progress-track {
+  height: 6px;
+  background: #e4ebe6;
+  border-radius: 4px;
+  overflow: hidden;
+  margin-bottom: 20px;
+}
+
+.progress-fill {
+  height: 100%;
+  background: #1f5b3a;
+  transition: width 0.2s ease;
+}
+
+.question-count {
+  font-size: 0.8rem;
+  color: #55665a;
+  margin-bottom: 8px;
+}
+
+.question-text {
+  font-size: 1.15rem;
+  font-weight: 600;
+  margin-bottom: 20px;
+  line-height: 1.4;
+}
+
+.option {
+  display: block;
+  width: 100%;
+  text-align: left;
+  padding: 12px 14px;
+  border-radius: 10px;
+  border: 1px solid #d7ded8;
+  background: #fafcfa;
+  margin-bottom: 10px;
+  cursor: pointer;
+  font-size: 0.98rem;
+}
+
+.option.selected {
+  border-color: #1f5b3a;
+  background: #e7f2ea;
+  font-weight: 600;
+}
+
+.score {
+  font-size: 2.4rem;
+  font-weight: 700;
+  color: #1f5b3a;
+  margin: 8px 0;
+}
+
+.result-meta {
+  color: #55665a;
+  margin-bottom: 20px;
+}
+
+table {
+  width: 100%;
+  border-collapse: collapse;
+  margin-top: 16px;
+  font-size: 0.9rem;
+}
+
+th,
+td {
+  text-align: left;
+  padding: 8px 6px;
+  border-bottom: 1px solid #e4ebe6;
+}
+
+th {
+  color: #55665a;
+  font-weight: 600;
+}
