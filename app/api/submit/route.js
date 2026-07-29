@@ -37,8 +37,8 @@ export async function POST(request) {
 
   try {
     await query(
-      `INSERT INTO participants (name, email, phone, score, total, time_taken_seconds) VALUES ($1, $2, $3, $4, $5, $6)`,
-      [name.trim(), email.trim(), phone.trim(), score, total, timeTaken]
+      `INSERT INTO participants (name, email, phone, score, total, time_taken_seconds, answers) VALUES ($1, $2, $3, $4, $5, $6, $7)`,
+      [name.trim(), email.trim(), phone.trim(), score, total, timeTaken, answers]
     );
   } catch (err) {
     console.error("Failed to save participant:", err);

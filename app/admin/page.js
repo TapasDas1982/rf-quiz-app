@@ -7,7 +7,7 @@ export default async function AdminPage() {
   let error = null;
   try {
     const result = await query(
-      `SELECT name, email, phone, score, total, time_taken_seconds, created_at
+      `SELECT id, name, email, phone, score, total, time_taken_seconds, created_at
        FROM participants ORDER BY created_at DESC`
     );
     entries = result.rows;
@@ -34,6 +34,7 @@ export default async function AdminPage() {
                 <th>Score</th>
                 <th>Time</th>
                 <th>Submitted</th>
+                <th></th>
               </tr>
             </thead>
             <tbody>
@@ -51,6 +52,9 @@ export default async function AdminPage() {
                     {Math.floor(e.time_taken_seconds / 60)}m {e.time_taken_seconds % 60}s
                   </td>
                   <td>{new Date(e.created_at).toLocaleString()}</td>
+                  <td>
+                    <a href={`/admin/${e.id}`}>View answers</a>
+                  </td>
                 </tr>
               ))}
             </tbody>
