@@ -1,7 +1,6 @@
 import { query } from "../../../lib/db";
 import { answerKey } from "../../../lib/answerKey";
 import { questions } from "../../../lib/questions";
-import { sendResultEmails } from "../../../lib/mailer";
 
 const EMAIL_RE = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
 
@@ -46,20 +45,5 @@ export async function POST(request) {
     return Response.json({ error: "Could not save your result. Please try again." }, { status: 500 });
   }
 
-  let emailSent = false;
-  try {
-    await sendResultEmails({
-      name: name.trim(),
-      email: email.trim(),
-      phone: phone.trim(),
-      score,
-      total,
-      timeTakenSeconds: timeTaken,
-    });
-    emailSent = true;
-  } catch (err) {
-    console.error("Failed to send result email:", err);
-  }
-
-  return Response.json({ score, total, timeTakenSeconds: timeTaken, emailSent });
+  return Response.json({ score, total, timeTakenSeconds: timeTaken });
 }

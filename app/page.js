@@ -199,10 +199,6 @@ export default function Home() {
         <div className="result-meta">
           {pct}% correct &middot; Time taken: {minutes}m {seconds}s
         </div>
-        {result.emailSent && (
-          <p className="subtitle">A copy of your result has been emailed to {form.email}.</p>
-        )}
-
         {leaderboard === null ? (
           <button type="button" className="btn secondary" onClick={loadLeaderboard} disabled={leaderboardLoading}>
             {leaderboardLoading ? "Loading..." : "View Leaderboard"}
