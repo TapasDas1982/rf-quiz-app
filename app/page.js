@@ -1,7 +1,6 @@
 "use client";
 
 import { useState } from "react";
-import { questions } from "../lib/questions";
 
 const EMAIL_RE = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
 const PHONE_RE = /^[0-9+\-\s()]{7,15}$/;
@@ -10,15 +9,17 @@ export default function Home() {
   const [stage, setStage] = useState("intro"); // intro | quiz | submitting | result | error
   const [form, setForm] = useState({ name: "", email: "", phone: "" });
   const [formErrors, setFormErrors] = useState({});
-  const [answers, setAnswers] = useState(Array(questions.length).fill(-1));
+  const [quiz, setQuiz] = useState(null); // { questionIds, questions }
+  const [answers, setAnswers] = useState([]);
   const [current, setCurrent] = useState(0);
   const [startTime, setStartTime] = useState(null);
   const [result, setResult] = useState(null);
   const [submitError, setSubmitError] = useState("");
+  const [loading, setLoading] = useState(false);
   const [leaderboard, setLeaderboard] = useState(null);
   const [leaderboardLoading, setLeaderboardLoading] = useState(false);
 
-  function handleStart(e) {
+  async function handleStart(e) {
     e.preventDefault();
     const errors = {};
     if (!form.name.trim()) errors.name = "Please enter your name.";
@@ -26,8 +27,22 @@ export default function Home() {
     if (!PHONE_RE.test(form.phone.trim())) errors.phone = "Please enter a valid phone number.";
     setFormErrors(errors);
     if (Object.keys(errors).length > 0) return;
-    setStartTime(Date.now());
-    setStage("quiz");
+    setLoading(true);
+    setSubmitError("");
+    try {
+      const res = await fetch("/api/quiz");
+      const data = await res.json();
+      if (!res.ok) throw new Error(data.error || "Could not load the quiz. Please try again.");
+      setQuiz(data);
+      setAnswers(Array(data.questions.length).fill(-1));
+      setCurrent(0);
+      setStartTime(Date.now());
+      setStage("quiz");
+    } catch (err) {
+      setSubmitError(err.message);
+    } finally {
+      setLoading(false);
+    }
   }
 
   function selectOption(optionIndex) {
@@ -48,6 +63,7 @@ export default function Home() {
           name: form.name.trim(),
           email: form.email.trim(),
           phone: form.phone.trim(),
+          questionIds: quiz.questionIds,
           answers,
           timeTakenSeconds,
         }),
@@ -81,9 +97,10 @@ export default function Home() {
         <div className="card">
           <h1>Reverse Factor Knowledge Quiz</h1>
           <p className="subtitle">
-            {questions.length} questions on the RF food, lifestyle & health concepts. Enter your
-            details to begin.
+            50 questions randomly picked from 200+ questions on the RF food, lifestyle &
+            health concepts. Enter your details to begin.
           </p>
+          {submitError && <div className="error">{submitError}</div>}
           <form onSubmit={handleStart}>
             <div className="field">
               <label>Name</label>
@@ -112,8 +129,8 @@ export default function Home() {
               />
               {formErrors.phone && <div className="error">{formErrors.phone}</div>}
             </div>
-            <button type="submit" className="btn">
-              Start Quiz
+            <button type="submit" className="btn" disabled={loading}>
+              {loading ? "Loading quiz..." : "Start Quiz"}
             </button>
           </form>
         </div>
@@ -122,20 +139,20 @@ export default function Home() {
   }
 
   if (stage === "quiz" || stage === "submitting") {
-    const q = questions[current];
-    const isLast = current === questions.length - 1;
+    const q = quiz.questions[current];
+    const isLast = current === quiz.questions.length - 1;
     const answered = answers[current] !== -1;
 
     return (
       <main className="page">
         <div className="card">
           <div className="question-count">
-            Question {current + 1} of {questions.length}
+            Question {current + 1} of {quiz.questions.length}
           </div>
           <div className="progress-track">
             <div
               className="progress-fill"
-              style={{ width: `${((current + 1) / questions.length) * 100}%` }}
+              style={{ width: `${((current + 1) / quiz.questions.length) * 100}%` }}
             />
           </div>
           <div className="question-text">{q.q}</div>

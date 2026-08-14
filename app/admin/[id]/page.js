@@ -11,7 +11,7 @@ export default async function ParticipantDetailPage({ params }) {
 
   try {
     const result = await query(
-      `SELECT name, email, phone, score, total, time_taken_seconds, answers, created_at
+      `SELECT name, email, phone, score, total, time_taken_seconds, answers, question_ids, created_at
        FROM participants WHERE id = $1`,
       [id]
     );
@@ -24,6 +24,16 @@ export default async function ParticipantDetailPage({ params }) {
   if (!error && !participant) {
     error = "Submission not found.";
   }
+
+  const qById = new Map(questions.map((q) => [q.id, q]));
+  const ids = participant?.question_ids || [];
+  const rows = participant?.answers
+    ? ids.map((qid, i) => ({
+        question: qById.get(qid),
+        given: participant.answers[i],
+        correctIdx: qById.get(qid) ? answerKey[qid] : null,
+      }))
+    : [];
 
   return (
     <main className="page">
@@ -45,7 +55,12 @@ export default async function ParticipantDetailPage({ params }) {
                 feature was added).
               </p>
             )}
-            {participant.answers && (
+            {participant.answers && rows.length === 0 && (
+              <p className="error">
+                This submission predates the randomized quiz and cannot be broken down per question.
+              </p>
+            )}
+            {rows.length > 0 && (
               <table>
                 <thead>
                   <tr>
@@ -57,16 +72,15 @@ export default async function ParticipantDetailPage({ params }) {
                   </tr>
                 </thead>
                 <tbody>
-                  {questions.map((q, i) => {
-                    const given = participant.answers[i];
-                    const correctIdx = answerKey[i];
-                    const isCorrect = given === correctIdx;
+                  {rows.map((r, i) => {
+                    const q = r.question;
+                    const isCorrect = r.given === r.correctIdx;
                     return (
                       <tr key={i}>
                         <td>{i + 1}</td>
                         <td>{q.q}</td>
-                        <td>{given == null || given === -1 ? "—" : q.options[given]}</td>
-                        <td>{q.options[correctIdx]}</td>
+                        <td>{r.given == null || r.given === -1 ? "—" : q.options[r.given]}</td>
+                        <td>{q.options[r.correctIdx]}</td>
                         <td style={{ color: isCorrect ? "#1f5b3a" : "#b3261e", fontWeight: 600 }}>
                           {isCorrect ? "Correct" : "Wrong"}
                         </td>
